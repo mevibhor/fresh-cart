@@ -1,34 +1,41 @@
 import Navbar from "../components/Navbar";
-import data from "../data";
-import { Link } from "react-router-dom";
+import CategoryCard from "../components/CategoryCard";
+import ContentState from "../components/ContentState";
+import { getCategories } from "../api/products";
+import useApi from "../hooks/useApi";
 
 const CategoryPage = () => {
+  const { data, isLoading, error, refetch } = useApi(getCategories);
+  const categories = data ?? [];
+
   return (
     <>
       <Navbar />
-      <div className="w-full flex flex-col items-center justify-center font-default">
-        <div className="flex flex-wrap items-center w-[73%] justify-center gap-6 mt-16">
-          <div className="flex items-center justify-start ml-8 w-full mt-2 h-12 text-2xl font-bold">
-            <h2>Listed Categories</h2>
+
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 font-default sm:px-6 sm:py-10">
+        <header className="mb-6">
+          <h1 className="font-heading text-2xl font-bold text-gray-900 sm:text-3xl">
+            All Categories
+          </h1>
+          <p className="mt-2 text-sm text-gray-500 sm:text-base">
+            Browse products by category.
+          </p>
+        </header>
+
+        <ContentState
+          isLoading={isLoading}
+          error={error}
+          isEmpty={!isLoading && !error && categories.length === 0}
+          emptyMessage="No categories available."
+          onRetry={refetch}
+        >
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            {categories.map((category) => (
+              <CategoryCard key={category.slug} category={category} />
+            ))}
           </div>
-          {data.top_categories.map((listedCat) => {
-            return (
-              <Link to={`/details/${listedCat.id}`} key={listedCat.id}>
-                <div className="w-60 shadow-md rounded-lg cursor-pointer relative duration-300 hover:scale-105">
-                  <img
-                    src={listedCat.image}
-                    alt="category-image"
-                    className="w-full h-[80%] rounded-lg brightness-75"
-                  />
-                  <div className="text-base lowercase font-medium tracking-wide absolute bottom-0 mb-4 pl-2 text-white max-w-[80%]">
-                    {listedCat.name}
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+        </ContentState>
+      </main>
     </>
   );
 };
