@@ -343,25 +343,6 @@ const OrdersPage = () => {
               );
             })}
           </div>
-
-          <div className="flex flex-col items-center justify-between gap-3 p-4 mt-6 text-center border border-blue-100 rounded-xl bg-blue-50/60 sm:flex-row sm:px-5 sm:text-left">
-            <div>
-              <p className="text-sm font-semibold text-gray-900">
-                Want to find something else?
-              </p>
-              <p className="mt-1 text-xs text-gray-600 sm:text-sm">
-                Browse the store and discover your next favourite product.
-              </p>
-            </div>
-
-            <Link
-              to="/"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition bg-blue-600 rounded-lg min-h-10 shrink-0 hover:bg-blue-700"
-            >
-              Shop now
-              <FiArrowRight size={15} aria-hidden="true" />
-            </Link>
-          </div>
         </>
       )}
     </main>

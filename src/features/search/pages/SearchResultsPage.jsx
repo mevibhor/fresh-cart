@@ -1,11 +1,10 @@
 import { useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
 import { searchProducts } from "../../products/api/products";
 import useApi from "../../../hooks/useApi";
 import ContentState from "../../../components/shared/ContentState";
-import DiscountBadge from "../../products/components/DiscountBadge";
+import ProductCard from "../../products/components/ProductCard";
 import SearchBar from "../components/SearchBar";
 
 const SearchResultsPage = () => {
@@ -24,7 +23,7 @@ const SearchResultsPage = () => {
 
   return (
     <main className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-7xl min-w-0 px-4 py-6 font-default sm:px-6 sm:py-8 lg:px-8">
-      <div className="flex items-center w-full max-w-4xl min-w-0 gap-2 mx-auto mb-6 sm:gap-4">
+      <div className="flex items-center w-full min-w-0 gap-2 mx-auto mb-6 sm:gap-4">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -70,7 +69,7 @@ const SearchResultsPage = () => {
           >
             <div className="grid items-stretch grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
               {products.map((product) => (
-                <DiscountBadge key={product.id} productData={product} />
+                <ProductCard key={product.id} productData={product} />
               ))}
             </div>
           </ContentState>
