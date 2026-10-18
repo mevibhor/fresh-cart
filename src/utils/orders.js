@@ -1,75 +1,86 @@
 const ORDERS_STORAGE_KEY = "orders";
 
+// Read previously saved orders.
 export function readOrders() {
   try {
-    const storedValue = localStorage.getItem(ORDERS_STORAGE_KEY);
+    const savedOrders = localStorage.getItem(ORDERS_STORAGE_KEY);
 
-    if (!storedValue) {
+    if (!savedOrders) {
       return [];
     }
 
-    const parsedValue = JSON.parse(storedValue);
+    const orders = JSON.parse(savedOrders);
 
-    return Array.isArray(parsedValue) ? parsedValue : [];
+    // Make sure the saved data is an array.
+    return Array.isArray(orders) ? orders : [];
   } catch {
+    // Return an empty list if the saved data cannot be read.
     return [];
   }
 }
 
+// Save a new order after validating its data.
 export function saveOrder({ items, subtotal, deliveryCharge }) {
+  // An order must contain at least one item.
   if (!Array.isArray(items) || items.length === 0) {
     return false;
   }
 
-  const safeItems = items.map((item) => ({
+  // Convert prices and quantities to numbers.
+  const orderItems = items.map((item) => ({
     ...item,
     quantity: Number(item.quantity),
     base_cost: Number(item.base_cost),
   }));
 
-  if (
-    safeItems.some(
-      (item) =>
-        !Number.isFinite(item.quantity) ||
-        item.quantity <= 0 ||
-        !Number.isFinite(item.base_cost) ||
-        item.base_cost < 0,
-    )
-  ) {
+  // Reject items with invalid quantities or prices.
+  const hasInvalidItem = orderItems.some(
+    (item) =>
+      !Number.isFinite(item.quantity) ||
+      item.quantity <= 0 ||
+      !Number.isFinite(item.base_cost) ||
+      item.base_cost < 0,
+  );
+
+  if (hasInvalidItem) {
     return false;
   }
 
-  const safeSubtotal = Number(subtotal);
-  const safeDeliveryCharge = Number(deliveryCharge);
+  // Convert the order amounts to numbers.
+  const orderSubtotal = Number(subtotal);
+  const orderDeliveryCharge = Number(deliveryCharge);
 
+  // Reject invalid or negative order amounts.
   if (
-    !Number.isFinite(safeSubtotal) ||
-    safeSubtotal < 0 ||
-    !Number.isFinite(safeDeliveryCharge) ||
-    safeDeliveryCharge < 0
+    !Number.isFinite(orderSubtotal) ||
+    orderSubtotal < 0 ||
+    !Number.isFinite(orderDeliveryCharge) ||
+    orderDeliveryCharge < 0
   ) {
     return false;
   }
 
   try {
+    // Read the existing orders before adding the new one.
     const existingOrders = readOrders();
 
-    const order = {
-      id: `order-${Date.now()}`,
+    const newOrder = {
+      id: `OD${Date.now()}`,
       createdAt: new Date().toISOString(),
-      items: safeItems,
-      subtotal: safeSubtotal,
-      deliveryCharge: safeDeliveryCharge,
-      total: safeSubtotal + safeDeliveryCharge,
+      items: orderItems,
+      subtotal: orderSubtotal,
+      deliveryCharge: orderDeliveryCharge,
+      total: orderSubtotal + orderDeliveryCharge,
     };
 
-    localStorage.setItem(
-      ORDERS_STORAGE_KEY,
-      JSON.stringify([order, ...existingOrders]),
-    );
+    // Keep the newest order at the beginning of the list.
+    const updatedOrders = [newOrder, ...existingOrders];
+
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(updatedOrders));
 
     return true;
   } catch {
+    // Report failure if the order cannot be saved.
     return false;
   }
 }
