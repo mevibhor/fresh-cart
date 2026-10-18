@@ -26,6 +26,14 @@ const CategoryDetail = () => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
+  const categoryCartCount = cartItems.reduce((total, item) => {
+    if (item.category === categoryId) {
+      return total + Number(item.quantity || 0);
+    }
+
+    return total;
+  }, 0);
+
   return (
     <main className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-7xl px-4 py-5 font-default sm:px-6 sm:py-8 lg:px-8">
       <header className="mb-6 flex min-w-0 items-center gap-3 rounded-xl border border-gray-200 bg-[#F2F2F2] px-3 py-3 sm:px-5">
@@ -47,9 +55,12 @@ const CategoryDetail = () => {
           </p>
         </div>
 
-        <span className="shrink-0 rounded-md bg-white px-2 py-1 text-xs text-gray-600">
-          {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in bag
-        </span>
+        {categoryCartCount > 0 && (
+          <span className="shrink-0 rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white">
+            {categoryCartCount} {categoryCartCount === 1 ? "item" : "items"} in
+            bag
+          </span>
+        )}
       </header>
 
       <ContentState

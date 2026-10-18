@@ -2,10 +2,9 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 
-import { CartContext } from "../context/Cart";
+import { CartContext, DELIVERY_CHARGE } from "../context/Cart";
+import { saveOrder } from "../utils/orders";
 import emptybag from "../assets/empty bag.svg";
-
-const DELIVERY_CHARGE = 30;
 
 const Bag = () => {
   const {
@@ -19,26 +18,21 @@ const Bag = () => {
 
   const navigate = useNavigate();
 
-  const saveOrdersToLocalStorage = (items) => {
-    try {
-      const storedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-      const safeOrders = Array.isArray(storedOrders) ? storedOrders : [];
-
-      localStorage.setItem("orders", JSON.stringify([...safeOrders, ...items]));
-
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   const handlePlaceOrder = () => {
-    if (cartItems.length === 0) return;
+    if (cartItems.length === 0) {
+      return;
+    }
 
-    const saved = saveOrdersToLocalStorage(cartItems);
+    const saved = saveOrder({
+      items: cartItems,
+      subtotal: getCartSubTotal(),
+      deliveryCharge: DELIVERY_CHARGE,
+    });
 
     if (!saved) {
-      window.alert("Your order could not be saved. Please try again.");
+      window.alert(
+        "Your order could not be saved. Please check your browser storage and try again.",
+      );
       return;
     }
 
@@ -51,12 +45,15 @@ const Bag = () => {
       {cartItems.length === 0 ? (
         <section className="flex min-h-[60vh] flex-col items-center justify-center text-center">
           <img src={emptybag} alt="" className="mb-4 w-40 max-w-full sm:w-56" />
+
           <h1 className="font-heading text-xl font-semibold text-gray-800 sm:text-2xl">
             Your bag is currently empty.
           </h1>
+
           <p className="mt-2 text-sm text-gray-500">
             Browse the catalogue and add something you like.
           </p>
+
           <Link
             to="/"
             className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg border border-orange-600 px-5 py-2 font-medium text-orange-700 transition hover:bg-orange-50"
@@ -71,6 +68,7 @@ const Bag = () => {
               <h1 className="font-heading text-2xl font-bold text-gray-900 sm:text-3xl">
                 Your Bag
               </h1>
+
               <span className="flex h-7 min-w-7 items-center justify-center rounded-lg bg-blue-600 px-2 text-sm font-medium text-white">
                 {cartItems.length}
               </span>
@@ -124,10 +122,7 @@ const Bag = () => {
                         ₹{Number(item.base_cost).toFixed(2)}
                       </p>
 
-                      <div
-                        className="mt-3 inline-flex h-9 items-center overflow-hidden rounded-lg border border-blue-600 text-blue-700"
-                        aria-label={`Quantity of ${item.name}`}
-                      >
+                      <div className="mt-3 inline-flex h-9 items-center overflow-hidden rounded-lg border border-blue-600 text-blue-700">
                         <button
                           type="button"
                           onClick={() => removeFromCart(item)}
@@ -136,14 +131,20 @@ const Bag = () => {
                         >
                           −
                         </button>
+
                         <span className="min-w-8 text-center text-sm">
                           {item.quantity}
                         </span>
+
                         <button
                           type="button"
                           onClick={() => addToCart(item)}
                           aria-label={`Increase quantity of ${item.name}`}
-                          className="h-full w-9 text-xl transition hover:bg-blue-50"
+                          disabled={
+                            item.stock != null &&
+                            item.quantity >= Number(item.stock)
+                          }
+                          className="h-full w-9 text-xl transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:text-gray-300"
                         >
                           +
                         </button>

@@ -15,6 +15,12 @@ const navItems = [
 const Navbar = () => {
   const { cartItems } = useContext(CartContext);
 
+  // Count all units, including multiple quantities of the same product.
+  const totalCartQuantity = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 w-full border-b border-gray-100 bg-white shadow-sm">
       <nav
@@ -37,9 +43,9 @@ const Navbar = () => {
             <span className="relative">
               <Icon className="text-2xl sm:text-3xl" aria-hidden="true" />
 
-              {label === "Bag" && cartItems.length > 0 && (
+              {label === "Bag" && totalCartQuantity > 0 && (
                 <span className="absolute -right-2 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-semibold text-white">
-                  {cartItems.length}
+                  {totalCartQuantity}
                 </span>
               )}
             </span>
