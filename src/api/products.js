@@ -62,3 +62,19 @@ export async function getProductsByCategory(categorySlug, signal) {
 
   return data.products.map(formatProduct);
 }
+
+export async function searchProducts(query, signal) {
+  const trimmedQuery = query.trim();
+
+  if (!trimmedQuery) {
+    return [];
+  }
+
+  const data = await fetchJSON(
+    `${API_URL}/search?q=${encodeURIComponent(trimmedQuery)}&limit=0`,
+    signal,
+    "Could not search products.",
+  );
+
+  return data.products.map(formatProduct);
+}

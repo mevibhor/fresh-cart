@@ -1,46 +1,55 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
 
 const SearchBar = () => {
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(
+    () => searchParams.get("search_query") ?? "",
+  );
   const navigate = useNavigate();
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      navigate(`/search?search_query=${search}`);
-    }
-  };
+  function handleSubmit(event) {
+    event.preventDefault();
 
-  const handleSearchButtonClick = () => {
-    navigate(`/search?search_query=${search}`);
-  };
+    const query = search.trim();
 
-  const handleClick = () => {
-    if (search.trim() === "") {
+    if (!query) {
       return;
-    } else {
-      handleSearchButtonClick();
     }
-  };
+
+    const params = new URLSearchParams({
+      search_query: query,
+    });
+
+    navigate(`/search?${params.toString()}`);
+  }
 
   return (
-    <div className="flex items-center justify-center mt-20 mb-6 w-[73%]">
+    <form
+      onSubmit={handleSubmit}
+      role="search"
+      className="mx-auto flex w-full min-w-0 items-center gap-2 font-default"
+    >
       <input
-        onChange={(e) => setSearch(e.target.value.toLowerCase())}
-        onKeyPress={handleKeyPress}
+        type="search"
+        name="search_query"
         value={search}
-        type="text"
-        className="bg-[#F2F2F2] p-2 w-full rounded-lg focus:outline-none focus:outline-blue-300"
+        onChange={(event) => setSearch(event.target.value)}
         placeholder="Search for products..."
+        aria-label="Search products"
+        className="h-11 min-w-0 flex-1 rounded-lg border border-gray-200 bg-[#F2F2F2] px-3 text-sm text-gray-800 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100 sm:px-4 sm:text-base"
       />
+
       <button
-        onClick={handleClick}
-        className="flex items-center justify-center w-12 h-10 text-2xl ml-2 rounded-lg bg-[#3B82F6] text-white"
+        type="submit"
+        aria-label="Search"
+        disabled={!search.trim()}
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-xl text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <IoIosSearch />
+        <IoIosSearch aria-hidden="true" />
       </button>
-    </div>
+    </form>
   );
 };
 

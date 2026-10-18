@@ -1,63 +1,86 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
-import data from "../data";
+import { useCallback, useContext } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
+import { searchProducts } from "../api/products";
+import useApi from "../hooks/useApi";
+import ContentState from "../components/ContentState";
 import ItemsCard from "../components/ItemsCard";
 import SearchBar from "../components/SearchBar";
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { CartContext } from "../context/Cart";
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
-  const search_query = searchParams.get("search_query");
   const navigate = useNavigate();
+  const { cartItems } = useContext(CartContext);
 
-  const filteredSearchData = data.all_products.flatMap((topCatData) =>
-    topCatData.products.filter((filteredProduct) =>
-      filteredProduct.name.toLowerCase().includes(search_query.toLowerCase())
-    )
+  const query = (searchParams.get("search_query") ?? "").trim();
+
+  const loadSearchResults = useCallback(
+    (signal) => searchProducts(query, signal),
+    [query],
   );
 
-  function goBack() {
-    navigate(-1);
-  }
+  const { data, isLoading, error, refetch } = useApi(loadSearchResults);
+
+  const products = data ?? [];
 
   return (
-    <div className="w-full flex items-center justify-center flex-col">
-      <div className="w-[96%] flex justify-center items-center mt-[-50px] gap-1">
+    <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-5 font-default sm:px-6 sm:py-8">
+      <div className="mb-6 flex min-w-0 items-center gap-2 sm:gap-4">
         <button
-          className="h-10 w-10 flex items-center justify-center text-center mt-[3.5rem] bg-[#F2F2F2] rounded-lg"
-          onClick={goBack}
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-800 transition hover:bg-gray-200"
         >
-          <IoMdArrowRoundBack />
+          <IoMdArrowRoundBack size={22} />
         </button>
+
         <SearchBar />
       </div>
-      <div className="w-[73%] font-default">
-        {filteredSearchData.length === 0 ? (
-          <div className="w-full h-[60vh] flex flex-col items-center justify-center">
-            <span className="p-4 w-[90%] text-center bg-sky-200 text-blue-600 text-2xl font-medium rounded-lg">
-              No results found for "{search_query}"
-            </span>
+
+      <section>
+        <header className="mb-5">
+          <h1 className="font-heading text-xl font-bold text-gray-900 sm:text-2xl">
+            Search Results
+          </h1>
+
+          {query && !isLoading && !error && (
+            <p className="mt-1 break-words text-sm text-gray-600 sm:text-base">
+              {products.length} {products.length === 1 ? "result" : "results"}{" "}
+              for <span className="font-semibold text-gray-900">"{query}"</span>
+            </p>
+          )}
+        </header>
+
+        {!query ? (
+          <div className="rounded-xl border border-gray-200 bg-white px-4 py-12 text-center">
+            <p className="text-sm text-gray-600 sm:text-base">
+              Enter a product name in the search bar to get started.
+            </p>
           </div>
         ) : (
-          <>
-            <div className="flex items-center justify-between mb-6 py-3 rounded-lg">
-              <div className="text-lg flex ml-4 normal-case">
-                <span className="px-2 font-semibold">
-                  {filteredSearchData.length}
-                </span>
-                Search results for "{search_query}"
-              </div>
+          <ContentState
+            isLoading={isLoading}
+            error={error}
+            isEmpty={!isLoading && !error && products.length === 0}
+            emptyMessage={`No products found for "${query}". Try a different search.`}
+            onRetry={refetch}
+          >
+            <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+              {products.map((product) => (
+                <ItemsCard key={product.id} productData={product} />
+              ))}
             </div>
-          </>
+          </ContentState>
         )}
+      </section>
+
+      <div className="sr-only" aria-live="polite">
+        {cartItems.length} items in your shopping bag.
       </div>
-      <div className="flex w-[73%] flex-wrap items-center gap-[17.6px]">
-        {filteredSearchData.map((filteredProduct) => (
-          <ItemsCard productData={filteredProduct} key={filteredProduct.id} />
-        ))}
-      </div>
-    </div>
+    </main>
   );
 };
 
