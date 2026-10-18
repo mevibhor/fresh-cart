@@ -1,37 +1,75 @@
 import { Link } from "react-router-dom";
-import data from "../data";
+import { getProducts } from "../api/products";
+import useApi from "../hooks/useApi";
+import ContentState from "./ContentState";
 import ItemsCard from "./ItemsCard";
 
-const Categories = ({ handleClick }) => {
+const Categories = () => {
+  const { data, isLoading, error, refetch } = useApi(getProducts);
+
+  // The API data is null until the first request succeeds.
+  const products = data ?? [];
+
+  const groupedProducts = products.reduce((groups, product) => {
+    const category = product.category || "other";
+
+    if (!groups[category]) {
+      groups[category] = [];
+    }
+
+    groups[category].push(product);
+
+    return groups;
+  }, {});
+
+  const categories = Object.entries(groupedProducts);
+
   return (
-    <>
-      {data.top_products.map((topCatData) => {
-        return (
-          <div className="w-[73%] font-default" key={topCatData.category_id}>
-            <div className="flex items-center justify-between my-4 py-3 bg-[#F2F2F2] rounded-lg">
-              <div className="text-lg flex ml-4 font-bold normal-case">
-                {topCatData.category_name}
-                <div className="ml-3 bg-blue-500 text-[#F2F2F2] rounded-lg text-sm flex items-center justify-center w-7 h-8 font-medium">
-                  {topCatData.product_count}
+    <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-6 font-default sm:px-6">
+      <ContentState
+        isLoading={isLoading}
+        error={error}
+        isEmpty={!isLoading && !error && products.length === 0}
+        emptyMessage="No products found."
+        onRetry={refetch}
+      >
+        {categories.map(([category, categoryProducts]) => {
+          const categoryName = category
+            .split("-")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+
+          return (
+            <section key={category}>
+              <div className="sticky top-16 z-20 mb-4 flex items-center justify-between rounded-lg border border-gray-200 bg-[#F2F2F2] px-4 py-3 shadow-sm">
+                <div className="flex min-w-0 items-center gap-3">
+                  <h2 className="truncate font-heading text-lg font-semibold text-gray-800 sm:text-xl">
+                    {categoryName}
+                  </h2>
+
+                  <span className="shrink-0 rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white">
+                    {categoryProducts.length}
+                  </span>
                 </div>
-              </div>
-              <Link to={`/details/${topCatData.category_id}`}>
-                <div className=" capitalize pr-8 text-blue-600 font-medium">
+
+                <Link
+                  to={`/details/${category}`}
+                  className="ml-3 shrink-0 text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline"
+                >
                   See All
-                </div>
-              </Link>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              {topCatData.products.map((productData) => {
-                return (
-                  <ItemsCard productData={productData} key={productData.id} />
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+                {categoryProducts.map((product) => (
+                  <ItemsCard key={product.id} productData={product} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </ContentState>
+    </div>
   );
 };
 
