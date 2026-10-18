@@ -45,6 +45,22 @@ export async function getProducts(signal) {
   return data.products.map(formatProduct);
 }
 
+export async function getProductById(productId, signal) {
+  const id = Number(productId);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new Error("Invalid product ID.");
+  }
+
+  const product = await fetchJSON(
+    `${API_URL}/${id}`,
+    signal,
+    "Could not load product details.",
+  );
+
+  return formatProduct(product);
+}
+
 export async function getCategories(signal) {
   return fetchJSON(
     `${API_URL}/categories`,
