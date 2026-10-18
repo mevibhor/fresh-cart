@@ -1,14 +1,13 @@
 import { useCallback, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { getProductsByCategory } from "../../../features/products/api/products";
+import useApi from "../../../hooks/useApi";
+import ContentState from "../../../components/shared/ContentState";
+import { CartContext } from "../../cart/context/Cart";
+import ProductCard from "../../products/components/ProductCard";
 
-import { getProductsByCategory } from "../api/products";
-import useApi from "../hooks/useApi";
-import ContentState from "../components/ContentState";
-import ItemsCard from "../components/ItemsCard";
-import { CartContext } from "../context/Cart";
-
-const CategoryDetail = () => {
+const CategoryDetailPage = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext);
@@ -41,13 +40,13 @@ const CategoryDetail = () => {
           type="button"
           onClick={() => navigate(-1)}
           aria-label="Go back"
-          className="shrink-0 rounded-lg p-2 text-gray-700 transition hover:bg-white"
+          className="p-2 text-gray-700 transition rounded-lg shrink-0 hover:bg-white"
         >
           <IoMdArrowRoundBack size={23} />
         </button>
 
-        <div className="min-w-0 flex-1">
-          <h1 className="break-words font-heading text-lg font-bold text-gray-900 sm:text-2xl">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-bold text-gray-900 break-words font-heading sm:text-2xl">
             {categoryName}
           </h1>
           <p className="text-xs text-gray-500 sm:text-sm">
@@ -56,7 +55,7 @@ const CategoryDetail = () => {
         </div>
 
         {categoryCartCount > 0 && (
-          <span className="shrink-0 rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white">
+          <span className="px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded-md shrink-0">
             {categoryCartCount} {categoryCartCount === 1 ? "item" : "items"} in
             bag
           </span>
@@ -70,9 +69,9 @@ const CategoryDetail = () => {
         emptyMessage={`No products found in ${categoryName}.`}
         onRetry={refetch}
       >
-        <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid items-stretch grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
           {products.map((product) => (
-            <ItemsCard key={product.id} productData={product} />
+            <ProductCard key={product.id} productData={product} />
           ))}
         </div>
       </ContentState>
@@ -80,4 +79,4 @@ const CategoryDetail = () => {
   );
 };
 
-export default CategoryDetail;
+export default CategoryDetailPage;

@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { BiCategoryAlt } from "react-icons/bi";
 import { FiHome, FiShoppingBag, FiList } from "react-icons/fi";
 
-import { CartContext } from "../context/Cart";
+import { CartContext } from "../../features/cart/context/Cart";
 
 const navItems = [
   { to: "/", label: "Home", Icon: FiHome, end: true },
@@ -22,10 +22,10 @@ const Navbar = () => {
   );
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-16 w-full border-b border-gray-100 bg-white shadow-sm">
+    <header className="fixed inset-x-0 top-0 z-50 w-full h-16 bg-white border-b border-gray-100 shadow-sm">
       <nav
         aria-label="Main navigation"
-        className="mx-auto flex h-full w-full max-w-7xl items-center justify-around px-4 font-default sm:px-6 lg:px-8"
+        className="flex items-center justify-around w-full h-full px-4 mx-auto max-w-7xl font-default sm:px-6 lg:px-8"
       >
         {navItems.map(({ to, label, Icon, end }) => (
           <NavLink

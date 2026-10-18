@@ -1,13 +1,12 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { getProducts } from "../../products/api/products";
+import { CartContext } from "../../cart/context/Cart";
+import useApi from "../../../hooks/useApi";
+import ContentState from "../../../components/shared/ContentState";
+import ProductCard from "../../products/components/ProductCard";
 
-import { getProducts } from "../api/products";
-import { CartContext } from "../context/Cart";
-import useApi from "../hooks/useApi";
-import ContentState from "./ContentState";
-import ItemsCard from "./ItemsCard";
-
-const Categories = () => {
+const CategoriesSection = () => {
   const { data, isLoading, error, refetch } = useApi(getProducts);
   const { cartItems } = useContext(CartContext);
 
@@ -38,7 +37,7 @@ const Categories = () => {
   const categories = Object.entries(groupedProducts);
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-6 font-default sm:px-6 lg:px-8">
+    <div className="w-full px-4 py-6 mx-auto space-y-8 max-w-7xl font-default sm:px-6 lg:px-8">
       <ContentState
         isLoading={isLoading}
         error={error}
@@ -57,18 +56,18 @@ const Categories = () => {
           return (
             <section key={category}>
               <div className="sticky top-16 z-20 mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 bg-[#F2F2F2] px-4 py-3 shadow-sm">
-                <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
-                  <h2 className="font-heading text-lg font-semibold text-gray-800 sm:text-xl">
+                <div className="flex flex-wrap items-center min-w-0 gap-2 sm:gap-3">
+                  <h2 className="text-lg font-semibold text-gray-800 font-heading sm:text-xl">
                     {categoryName}
                   </h2>
 
-                  <span className="shrink-0 rounded-md bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-md shrink-0">
                     {categoryProducts.length} products
                   </span>
 
                   {cartCount > 0 && (
                     <span
-                      className="shrink-0 rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white"
+                      className="px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded-md shrink-0"
                       aria-label={`${cartCount} items from ${categoryName} in your bag`}
                     >
                       {cartCount} in bag
@@ -78,15 +77,15 @@ const Categories = () => {
 
                 <Link
                   to={`/details/${category}`}
-                  className="shrink-0 text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline"
+                  className="text-sm font-semibold text-blue-700 shrink-0 hover:text-blue-900 hover:underline"
                 >
                   See All
                 </Link>
               </div>
 
-              <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid items-stretch grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
                 {categoryProducts.map((product) => (
-                  <ItemsCard key={product.id} productData={product} />
+                  <ProductCard key={product.id} productData={product} />
                 ))}
               </div>
             </section>
@@ -97,4 +96,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default CategoriesSection;

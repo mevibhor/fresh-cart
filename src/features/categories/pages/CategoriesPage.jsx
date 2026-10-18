@@ -1,16 +1,16 @@
 import CategoryCard from "../components/CategoryCard";
-import ContentState from "../components/ContentState";
-import { getCategories } from "../api/products";
-import useApi from "../hooks/useApi";
+import ContentState from "../../../components/shared/ContentState";
+import { getCategories } from "../../../features/products/api/products";
+import useApi from "../../../hooks/useApi";
 
-const CategoryPage = () => {
+const CategoriesPage = () => {
   const { data, isLoading, error, refetch } = useApi(getCategories);
   const categories = data ?? [];
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-6 font-default sm:px-6 sm:py-8 lg:px-8">
+    <main className="w-full px-4 py-6 mx-auto max-w-7xl font-default sm:px-6 sm:py-8 lg:px-8">
       <header className="mb-6">
-        <h1 className="font-heading text-2xl font-bold text-gray-900 sm:text-3xl">
+        <h1 className="text-2xl font-bold text-gray-900 font-heading sm:text-3xl">
           All Categories
         </h1>
         <p className="mt-2 text-sm text-gray-500 sm:text-base">
@@ -35,4 +35,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default CategoriesPage;

@@ -1,6 +1,6 @@
-const TotalOff = ({ base_cost, original_cost }) => {
+const DiscountBadge = ({ base_cost, original_cost }) => {
   const discount = Math.floor(
-    ((original_cost - base_cost) / original_cost) * 100
+    ((original_cost - base_cost) / original_cost) * 100,
   );
 
   return (
@@ -16,4 +16,4 @@ const TotalOff = ({ base_cost, original_cost }) => {
   );
 };
 
-export default TotalOff;
+export default DiscountBadge;

@@ -1,19 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import AppLayout from "./components/AppLayout";
-import Home from "./pages/Home";
-import SearchResults from "./pages/SearchResults";
-import CategoryPage from "./pages/CategoryPage";
-import CategoryDetail from "./pages/CategoryDetail";
-import ItemPage from "./pages/ItemPage";
-import Bag from "./pages/Bag";
-import Orders from "./pages/Orders";
-import Checkout from "./pages/Checkout";
-
-import { CartProvider } from "./context/Cart";
-import "./App.css";
+import AppLayout from "../src/components/layout/AppLayout";
+import HomePage from "./features/home/pages/HomePage";
+import SearchResultsPage from "./features/search/pages/SearchResultsPage";
+import CategoriesPage from "./features/categories/pages/CategoriesPage";
+import BagPage from "./features/cart/pages/BagPage";
+import OrdersPage from "./features/orders/pages/OrdersPage";
+import CategoryDetailPage from "./features/categories/pages/CategoryDetailPage";
+import ProductDetailsPage from "./features/products/pages/ProductDetailsPage";
+import CheckoutPage from "./features/checkout/pages/CheckoutPage";
+import { CartProvider } from "../src/features/cart/context/Cart";
+import "./styles/index.css";
 
 const router = createBrowserRouter([
   {
@@ -22,35 +20,35 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: "search",
-        element: <SearchResults />,
+        element: <SearchResultsPage />,
       },
       {
         path: "categories",
-        element: <CategoryPage />,
+        element: <CategoriesPage />,
       },
       {
         path: "bag",
-        element: <Bag />,
+        element: <BagPage />,
       },
       {
         path: "orders",
-        element: <Orders />,
+        element: <OrdersPage />,
       },
       {
         path: "details/:categoryId",
-        element: <CategoryDetail />,
+        element: <CategoryDetailPage />,
       },
       {
         path: "product/:productId",
-        element: <ItemPage />,
+        element: <ProductDetailsPage />,
       },
       {
         path: "checkout",
-        element: <Checkout />,
+        element: <CheckoutPage />,
       },
     ],
   },

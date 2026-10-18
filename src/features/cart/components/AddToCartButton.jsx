@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { CartContext } from "../context/Cart";
 
-const AddToCartBtn = ({ cartItemData }) => {
+const AddToCartButton = ({ cartItemData }) => {
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
 
   const alreadyAdded = cartItems.find((item) => item.id === cartItemData.id);
@@ -60,4 +60,4 @@ const AddToCartBtn = ({ cartItemData }) => {
   );
 };
 
-export default AddToCartBtn;
+export default AddToCartButton;
