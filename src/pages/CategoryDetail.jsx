@@ -1,6 +1,5 @@
 import { useCallback, useContext } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { FiShoppingBag } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 import { getProductsByCategory } from "../api/products";
@@ -20,7 +19,6 @@ const CategoryDetail = () => {
   );
 
   const { data, isLoading, error, refetch } = useApi(loadCategoryProducts);
-
   const products = data ?? [];
 
   const categoryName = (categoryId ?? "")
@@ -29,8 +27,8 @@ const CategoryDetail = () => {
     .join(" ");
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-5 font-default sm:px-6 sm:py-8">
-      <header className="mb-6 flex items-center gap-3 rounded-xl border border-gray-200 bg-[#F2F2F2] px-3 py-3 sm:px-5">
+    <main className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-7xl px-4 py-5 font-default sm:px-6 sm:py-8 lg:px-8">
+      <header className="mb-6 flex min-w-0 items-center gap-3 rounded-xl border border-gray-200 bg-[#F2F2F2] px-3 py-3 sm:px-5">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -41,7 +39,7 @@ const CategoryDetail = () => {
         </button>
 
         <div className="min-w-0 flex-1">
-          <h1 className="truncate font-heading text-lg font-bold text-gray-900 sm:text-2xl">
+          <h1 className="break-words font-heading text-lg font-bold text-gray-900 sm:text-2xl">
             {categoryName}
           </h1>
           <p className="text-xs text-gray-500 sm:text-sm">
@@ -49,19 +47,9 @@ const CategoryDetail = () => {
           </p>
         </div>
 
-        <NavLink
-          to="/bag"
-          aria-label={`Shopping bag, ${cartItems.length} items`}
-          className="relative shrink-0 rounded-lg p-2 text-gray-800 transition hover:bg-white"
-        >
-          <FiShoppingBag size={25} />
-
-          {cartItems.length > 0 && (
-            <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-semibold text-white">
-              {cartItems.length}
-            </span>
-          )}
-        </NavLink>
+        <span className="shrink-0 rounded-md bg-white px-2 py-1 text-xs text-gray-600">
+          {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in bag
+        </span>
       </header>
 
       <ContentState

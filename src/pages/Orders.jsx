@@ -1,70 +1,82 @@
-import Navbar from "../components/Navbar";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { FiShoppingCart } from "react-icons/fi";
+
+const readStoredOrders = () => {
+  try {
+    const storedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    return Array.isArray(storedOrders) ? storedOrders : [];
+  } catch {
+    return [];
+  }
+};
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders] = useState(readStoredOrders);
 
-  useEffect(() => {
-    const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    setOrders(storedOrders);
-  }, []);
   return (
-    <>
-      <Navbar />
-      <div className="w-full flex items-center justify-center font-default">
-        <div className="w-[73%] mt-16 flex flex-col">
-          {orders.length === 0 ? (
-            <div className="flex items-center justify-center mt-24 text-gray-400 flex-col">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-24 h-24"
+    <main className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-7xl px-4 py-6 font-default sm:px-6 sm:py-8 lg:px-8">
+      {orders.length === 0 ? (
+        <section className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+          <FiShoppingCart
+            className="h-20 w-20 text-gray-300 sm:h-24 sm:w-24"
+            aria-hidden="true"
+          />
+          <h1 className="mt-4 font-heading text-xl font-semibold text-gray-700 sm:text-2xl">
+            No orders yet
+          </h1>
+          <p className="mt-2 max-w-sm text-sm text-gray-500 sm:text-base">
+            Your completed orders will appear here.
+          </p>
+        </section>
+      ) : (
+        <>
+          <header className="mb-6">
+            <h1 className="font-heading text-2xl font-bold text-gray-900 sm:text-3xl">
+              My Orders
+            </h1>
+            <p className="mt-2 text-sm text-gray-500">
+              {orders.length} {orders.length === 1 ? "item" : "items"} saved in
+              your order history
+            </p>
+          </header>
+
+          <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {orders.map((order, index) => (
+              <li
+                key={`${order.id}-${index}`}
+                className="flex min-w-0 gap-4 rounded-xl border border-gray-200 bg-white p-3 sm:p-4"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                />
-              </svg>
-              <p>No Orders Running Currently!</p>
-            </div>
-          ) : (
-            <>
-              <div className="p-2 font-bold text-xl mt-4">My Orders</div>
-              <div className="flex flex-wrap items-center justify-between gap-6 my-3">
-                {orders.map((order) => {
-                  return (
-                    <div className="flex w-[33rem]">
-                      <img
-                        src={order.image}
-                        alt={`Image number: ${order.id}`}
-                        className="w-36 h-36 rounded-lg"
-                      />
-                      <div className="flex flex-col items-start ml-4">
-                        <span>{order.name}</span>
-                        <span className="text-base text-gray-500 font-bold my-2">
-                          {order.quantity} ITEM
-                        </span>
-                        <span className="w-full flex items-center">
-                          <span className="text-sm px-2 border bg-[#D0E2F0] border-blue-600 text-blue-600 text-center mr-2">
-                            {order.quantity}
-                          </span>
-                          <span>x</span>
-                          <span className="ml-2">₹{order.base_cost}</span>
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </>
+                <div className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-50 sm:h-32 sm:w-32">
+                  <img
+                    src={order.image}
+                    alt={order.name || "Ordered product"}
+                    className="h-full w-full object-contain p-2"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <h2 className="line-clamp-2 break-words font-medium text-gray-800">
+                    {order.name}
+                  </h2>
+
+                  <p className="mt-2 text-sm text-gray-500">
+                    Quantity: {order.quantity}
+                  </p>
+
+                  <p className="mt-auto pt-3 text-sm font-semibold text-gray-900">
+                    ₹
+                    {(
+                      Number(order.base_cost || 0) * Number(order.quantity || 0)
+                    ).toFixed(2)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </main>
   );
 };
 

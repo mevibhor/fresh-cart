@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
@@ -7,12 +7,10 @@ import useApi from "../hooks/useApi";
 import ContentState from "../components/ContentState";
 import ItemsCard from "../components/ItemsCard";
 import SearchBar from "../components/SearchBar";
-import { CartContext } from "../context/Cart";
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { cartItems } = useContext(CartContext);
 
   const query = (searchParams.get("search_query") ?? "").trim();
 
@@ -22,12 +20,11 @@ const SearchResults = () => {
   );
 
   const { data, isLoading, error, refetch } = useApi(loadSearchResults);
-
   const products = data ?? [];
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-5 font-default sm:px-6 sm:py-8">
-      <div className="mb-6 flex min-w-0 items-center gap-2 sm:gap-4">
+    <main className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-7xl min-w-0 px-4 py-6 font-default sm:px-6 sm:py-8 lg:px-8">
+      <div className="mx-auto mb-6 flex w-full max-w-4xl min-w-0 items-center gap-2 sm:gap-4">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -37,7 +34,7 @@ const SearchResults = () => {
           <IoMdArrowRoundBack size={22} />
         </button>
 
-        <SearchBar />
+        <SearchBar key={query} />
       </div>
 
       <section>
@@ -76,10 +73,6 @@ const SearchResults = () => {
           </ContentState>
         )}
       </section>
-
-      <div className="sr-only" aria-live="polite">
-        {cartItems.length} items in your shopping bag.
-      </div>
     </main>
   );
 };

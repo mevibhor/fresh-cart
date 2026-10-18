@@ -5,8 +5,18 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-padding-top: 4rem;
+  }
+
   body {
     @apply font-default text-gray-800;
+    min-width: 320px;
+    margin: 0;
+  }
+
+  #root {
+    min-height: 100vh;
   }
 
   h1,
@@ -17,6 +27,10 @@
   h6 {
     font-family: "League Spartan", sans-serif;
   }
+
+  img {
+    max-width: 100%;
+  }
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -26,30 +40,4 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.responsive-bag {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 100px;
-}
-
-.bag-navbar {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-@media (max-width: 600px) {
-  .responsive-bag {
-    font-size: 12px;
-    gap: 0;
-  }
-
-  .bag-navbar {
-    font-size: 8px;
-  }
 }

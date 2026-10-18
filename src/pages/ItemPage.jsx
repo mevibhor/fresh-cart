@@ -1,122 +1,147 @@
-import { useNavigate, useParams } from "react-router-dom";
-import data from "../data";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { NavLink } from "react-router-dom";
-import { CartContext } from "../context/Cart";
 import { useContext } from "react";
-import { FiShoppingBag } from "react-icons/fi";
-import TotalOff from "../components/TotalOff.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
+
+import data from "../data";
+import { CartContext } from "../context/Cart";
+import TotalOff from "../components/TotalOff";
 
 const ItemPage = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  function goBack() {
-    navigate(-1);
-  }
-
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
 
+  const numericProductId = Number(productId);
+
   const categoryWithProduct = data.top_products.find((category) =>
-    category.products.find((product) => product.id === +productId)
+    category.products.some((product) => product.id === numericProductId),
   );
 
   const productDetails = categoryWithProduct?.products.find(
-    (product) => product.id === +productId
+    (product) => product.id === numericProductId,
   );
 
-  const alreadyAdded = cartItems.find(
-    (cartItem) => cartItem.id === productDetails.id
-  );
+  const alreadyAdded = productDetails
+    ? cartItems.find((cartItem) => cartItem.id === productDetails.id)
+    : undefined;
+
+  if (!productDetails) {
+    return (
+      <main className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl flex-col items-center justify-center px-4 py-10 text-center font-default">
+        <h1 className="font-heading text-2xl font-bold text-gray-900">
+          Product not found
+        </h1>
+        <p className="mt-2 text-sm text-gray-500">
+          This product could not be found in the current catalogue.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="mt-6 min-h-11 rounded-lg bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700"
+        >
+          Back to shopping
+        </button>
+      </main>
+    );
+  }
+
+  const hasDiscount =
+    productDetails.original_cost != null &&
+    Number(productDetails.original_cost) > Number(productDetails.base_cost);
 
   return (
-    <>
-      <div className="w-full flex items-center justify-center flex-col font-default">
-        <div className="my-4 py-3 rounded-lg w-[60%]">
-          <div className="text-lg flex items-center ml-4 font-bold normal-case">
-            <button className="p-2 mr-4" onClick={goBack}>
-              <IoMdArrowRoundBack />
-            </button>
-            <div className="w-full flex items-center justify-between mr-12">
-              <div>{categoryWithProduct.category_name}</div>
-              <div>
-                <div>
-                  <NavLink to="/bag">
-                    <div className="flex flex-col items-center justify-center relative">
-                      <FiShoppingBag className="text-3xl" />
-                    </div>
-                    {cartItems.length === 0 ? (
-                      " "
-                    ) : (
-                      <span className="text-center absolute top-4 text-base px-[8px] rounded-[50%] bg-red-600 text-white ml-3">
-                        {cartItems.length}
-                      </span>
-                    )}
-                  </NavLink>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex items-center justify-center font-default">
-        <div className="w-[73%] justify-center flex flex-wrap">
+    <main className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-7xl px-4 py-5 font-default sm:px-6 sm:py-8 lg:px-8">
+      <header className="mb-6 flex min-w-0 items-center gap-3">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-gray-700 transition hover:bg-gray-100"
+        >
+          <IoMdArrowRoundBack size={23} />
+        </button>
+
+        <h1 className="min-w-0 break-words font-heading text-lg font-semibold text-gray-800 sm:text-xl">
+          {categoryWithProduct?.category_name || "Product details"}
+        </h1>
+      </header>
+
+      <section className="grid min-w-0 grid-cols-1 items-start gap-6 sm:gap-8 md:grid-cols-2 md:gap-10">
+        <div className="flex min-h-64 items-center justify-center overflow-hidden rounded-xl bg-white p-4 sm:min-h-80 sm:p-6">
           <img
             src={productDetails.image}
-            alt={`image: ${productDetails.id}`}
-            className="h-96 w-96 rounded-lg"
+            alt={productDetails.name}
+            className="max-h-[420px] w-full object-contain"
           />
-          <div className="mt-8 ml-12">
-            <div className="flex flex-col">
-              <span className="tracking-wide text-lg">
-                {productDetails.name}
-              </span>
-              <span className="text-lg mt-1">{productDetails.base_qty}</span>
-              <div className="flex items-center mt-1">
-                <span className="text-xl font-bold text-slate-900 mr-1">
-                  ₹{productDetails.base_cost}
-                </span>
-                <span className="text-sm text-slate-900 line-through">
-                  ₹{productDetails.original_cost}
+        </div>
+
+        <div className="min-w-0 py-2">
+          <h2 className="break-words font-heading text-2xl font-semibold text-gray-900 sm:text-3xl">
+            {productDetails.name}
+          </h2>
+
+          {productDetails.base_qty && (
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">
+              {productDetails.base_qty}
+            </p>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-2xl font-bold text-slate-900">
+              ₹{Number(productDetails.base_cost).toFixed(2)}
+            </span>
+
+            {hasDiscount && (
+              <>
+                <span className="text-sm text-gray-500 line-through">
+                  ₹{Number(productDetails.original_cost).toFixed(2)}
                 </span>
                 <TotalOff
                   base_cost={productDetails.base_cost}
                   original_cost={productDetails.original_cost}
                 />
-              </div>
-            </div>
+              </>
+            )}
+          </div>
 
-            <div className="border border-[#3A7BC8] text-[#3A7BC8] h-12 w-72 rounded-lg mt-12 flex items-center justify-center">
-              {!alreadyAdded ? (
+          <div className="mt-8 flex h-12 w-full max-w-sm items-center justify-center overflow-hidden rounded-lg border border-[#3A7BC8] text-[#3A7BC8]">
+            {!alreadyAdded ? (
+              <button
+                type="button"
+                onClick={() => addToCart(productDetails)}
+                className="h-full w-full font-medium transition hover:bg-blue-50"
+              >
+                Add to bag
+              </button>
+            ) : (
+              <>
                 <button
-                  onClick={() => addToCart(productDetails)}
-                  className="h-full w-full"
+                  type="button"
+                  onClick={() => removeFromCart(productDetails)}
+                  aria-label="Decrease quantity"
+                  className="h-full w-1/3 text-2xl transition hover:bg-blue-50"
                 >
-                  Add To Bag
+                  −
                 </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => removeFromCart(productDetails)}
-                    className="text-3xl w-[33.33%]"
-                  >
-                    -
-                  </button>
-                  <span className="text-lg w-[33.33%] text-center">
-                    {alreadyAdded.quantity}
-                  </span>
-                  <button
-                    onClick={() => addToCart(productDetails)}
-                    className="text-3xl w-[33.33%]"
-                  >
-                    +
-                  </button>
-                </>
-              )}
-            </div>
+
+                <span className="w-1/3 text-center font-medium">
+                  {alreadyAdded.quantity}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => addToCart(productDetails)}
+                  aria-label="Increase quantity"
+                  className="h-full w-1/3 text-2xl transition hover:bg-blue-50"
+                >
+                  +
+                </button>
+              </>
+            )}
           </div>
         </div>
-      </div>
-    </>
+      </section>
+    </main>
   );
 };
 

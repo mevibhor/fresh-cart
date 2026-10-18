@@ -8,7 +8,7 @@ const TopCategories = () => {
   const categories = data ?? [];
 
   return (
-    <section className="w-full max-w-7xl px-4 py-5 font-default sm:px-6">
+    <section className="mx-auto w-full max-w-7xl px-4 py-5 font-default sm:px-6 lg:px-8">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-heading text-xl font-bold text-gray-900 sm:text-2xl">
           Top Categories
