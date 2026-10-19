@@ -2,14 +2,13 @@
 
 # FreshCart 🛒
 
-FreshCart is a responsive e-commerce web application built with React and Vite, featuring product browsing, cart management, secure Stripe checkout, and order history.
+FreshCart is a responsive e-commerce web application built with React and Vite, featuring product browsing, cart management, checkout, and order history.
 
 ## Features
 
 - Browse and explore products
 - Add products to the cart and manage quantities
 - Persistent cart data using Local Storage
-- Checkout and Stripe payment integration
 - Order placement and order history
 - Expandable order details with itemized pricing
 - Subtotal and delivery charge breakdown
@@ -21,7 +20,6 @@ FreshCart is a responsive e-commerce web application built with React and Vite, 
 
 - **React** – Component-based UI development
 - **React Router DOM** – Client-side navigation
-- **Stripe** – Payment processing and checkout
 - **Tailwind CSS** – Utility-first styling and responsive design
 - **React Icons** – Interface icons
 - **Local Storage** – Persistent cart and order data
