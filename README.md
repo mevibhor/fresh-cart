@@ -1,20 +1,73 @@
+<img width="1376" height="768" alt="Gemini_Generated_Image_aza699aza699aza6" src="https://github.com/user-attachments/assets/839c8c93-ca98-4933-8ae7-c3f9b1031a4f" />
 
-![ecom-recording-ezgif com-optimize](https://github.com/VibhourSharma/E-commerce-App/assets/110191186/2dbe2b4f-b705-4f5f-93d3-c9ea5ac0e32b)
+# FreshCart 🛒
 
-# E-commerce Store
+FreshCart is a responsive e-commerce web application built with React and Vite, featuring product browsing, cart management, secure Stripe checkout, and order history.
 
-## **Project Overview**
-This project represents my implementation of an E-commerce store using React 18 and Tailwind CSS. The application encompasses a range of features to provide a comprehensive shopping experience, including product listings, categories, shopping bags, and order processing.
+## Features
 
-## **Key Features**
-- **Product Management:** The application allows the display and management of a variety of products, enhancing the user's shopping choices.
-- **Category Navigation:** Users can easily navigate through different product categories, streamlining the shopping process.
-- **Shopping Bag:** The inclusion of a shopping bag feature enables users to add, remove, and manage selected items before checkout.
-- **Order Processing:** The application supports the entire order processing workflow, ensuring a smooth transaction experience for users.
-- **Responsive Design:** Designed to be responsive, the store adapts to various screen sizes and devices, providing a seamless experience.
+- Browse and explore products
+- Add products to the cart and manage quantities
+- Persistent cart data using Local Storage
+- Checkout and Stripe payment integration
+- Order placement and order history
+- Expandable order details with itemized pricing
+- Subtotal and delivery charge breakdown
+- Responsive layouts for mobile, tablet, and desktop
+- Client-side routing with React Router
+- Reusable components and organized code
 
-## **Technologies Used**
-- **React 18:** The latest version of React, offering new features and improvements for building scalable and performant web applications.
-- **Tailwind CSS:** A utility-first CSS framework used for quickly styling the application, facilitating modern and responsive design.
+## Tech Stack
 
-Feel free to explore the E-commerce store, and your feedback is greatly appreciated!
+- **React** – Component-based UI development
+- **React Router DOM** – Client-side navigation
+- **Stripe** – Payment processing and checkout
+- **Tailwind CSS** – Utility-first styling and responsive design
+- **React Icons** – Interface icons
+- **Local Storage** – Persistent cart and order data
+
+## UI and Styling
+
+- Clean, minimal e-commerce interface
+- Responsive layouts using Tailwind CSS breakpoints
+- Consistent spacing, typography, colors, and borders
+- Reusable UI components
+- Interactive buttons, product cards, and expandable order cards
+- Accessible focus states and intuitive navigation
+- Typography using the project's configured font families and Tailwind font utilities
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/mevibhor/fresh-cart.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd fresh-cart
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open the local URL displayed in your terminal.
+
